@@ -90,3 +90,62 @@ pm.test("products to have members", function()=>{
    pm.expect(jsonData.products).to.have.members(["lettuce","cucumber"]);
 });
 ```
+```
+pm.test("id is correct value", function()=>{
+   pm.expect(jsonData.id).to.eql(1);
+});
+```
+```
+pm.test("products is include a value", function()=>{
+   pm.expect(jsonData.products).to.include("cucumber");
+});
+```
+
+```
+pm.test("products has a value at index", function()=>{
+   pm.expect(jsonData.products[2]).to.equal("cucumber");
+});
+```
+# JSON schema validation
+
+```
+var jsonData = {
+    "categories": [
+        {
+            "aNumber": "31000",
+            "aString": "Yarp",
+            "aBoolean": true
+        }
+    ]
+}
+
+
+
+var Ajv = require('ajv'),
+    ajv = new Ajv({logger: console, allErrors: true}),
+    schema =  {
+    "type": "object",
+    "required": [ "categories"],
+    "properties": {
+      "categories": {
+          "type": "array",
+          "items": {
+              "type": "object",
+              "required": [ "aStringOne", "aStringTwo", "aStringThree" ],
+              "properties": {
+                  "aNumber": { "type": "string" },
+                  "aString": { "type": "integer"},
+                  "aBoolean": { "type": "boolean"},
+         }
+       }
+     }
+   }
+}
+
+pm.test('Schema is valid', function() {
+    pm.expect(ajv.validate(schema, jsonData), JSON.stringify(ajv.errors)).to.be.true
+});
+```
+
+allErrors flag set so that it will return all the errors and not stop on the first.
+SON.stringify(ajv.errors) included to see the error(s) in the Test Result tab.
