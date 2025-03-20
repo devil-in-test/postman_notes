@@ -15,7 +15,7 @@ pm.test("StatusCode is 200", function()=>{
 ```
 ```
 pm.test("Successful post request", function()=>{
-   pm.expect(pm.response.code).to.be.one.of([201,202])
+   pm.expect(pm.response.code)).to.be.one.of([201,202])
 });
 ```
 ```
@@ -31,19 +31,62 @@ pm.test("Header contains Content-Type", function()=>{
 ```
 ```
 pm.test("Content-Type is application/json", function()=>{
-   pm.expect(pm.response.header.get("Content-Type").to.be.eql("application/json"));
+   pm.expect(pm.response.header.get("Content-Type")).to.be.eql("application/json");
 });
 ```
 # Cookies testing 
 
 ```
 pm.test("Check Cookie has language present", function()=>{
-   pm.expect(pm.cookies.has("language").to.be.true);
+   pm.expect(pm.cookies.has("language")).to.be.true;
 });
 ```
 ```
 pm.test("Check Cookie has language set to en-gb", function()=>{
-   pm.expect(pm.cookies.get("language").to.be.eql("en-gb");
+   pm.expect(pm.cookies.get("language")).to.be.eql("en-gb");
 });
 ```
-# Test response
+# Response time testing
+
+```
+pm.test("response time < 300ms", function()=>{
+   pm.expect(pm.response.responseTime).to.be.below(300);
+});
+```
+# Response body testing
+
+Get the json body
+
+Example body :
+```
+{
+   "id": 1,
+   "supplier": "vegman";
+   "products": ["cabbage","lettuce","cucumber"]
+}
+```
+
+```
+const jsonData = pm.response.json();
+```
+```
+pm.test("jsonData is an object", function()=>{
+   pm.expect(jsonData).to.be.an("object");
+});
+```
+```
+pm.test("id is a number", function()=>{
+   pm.expect(jsonData.id).to.be.a("number");
+});
+```
+```
+pm.test("supplier is a string", function()=>{
+   pm.expect(jsonData.supplier).to.be.a("string");
+});
+```
+
+```
+pm.test("products to have members", function()=>{
+   pm.expect(jsonData.products).to.have.members(["lettuce","cucumber"]);
+});
+```
